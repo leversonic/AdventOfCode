@@ -54,9 +54,15 @@ public class Program
             missingParameter = true;
         }
         if (missingParameter) {
-            Console.WriteLine("1");
             PrintUsageStringAndExit();
         }
+
+        var lines = File.ReadAllLines($"./input/{day:D2}-{part}.txt");
+
+        var solver = SolverDict.Solvers[day];
+        var solution = solver.Solve(lines, part);
+
+        Console.WriteLine($"Solution: {solution}");
     }
     private static void PrintUsageStringAndExit()
         {
