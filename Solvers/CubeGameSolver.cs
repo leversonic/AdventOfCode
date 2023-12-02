@@ -10,9 +10,8 @@ partial class CubeGameSolver : ISolver
 
     public int Solve(string[] lines, int part)
     {
+        var games = ParseGamesFromInput(lines);
         if (part == 1) {
-            var games = ParseGamesFromInput(lines);
-
             return games.Sum(g => {
                 if (g.Sets.Any(s => s.Red > RedCount || s.Green > GreenCount || s.Blue > BlueCount)) {
                     return 0;
@@ -20,7 +19,18 @@ partial class CubeGameSolver : ISolver
                 return g.Id;
             });
         } else {
-            throw new NotImplementedException("Part 2 not yet implemented");
+            return games.Sum(g => {
+                var minRed = g.Sets
+                    .Select(g => g.Red)
+                    .Max();
+                var minGreen = g.Sets
+                    .Select(g => g.Green)
+                    .Max();
+                var minBlue = g.Sets
+                    .Select(g => g.Blue)
+                    .Max();
+                return minRed * minGreen * minBlue;
+            });
         }
     }
 
