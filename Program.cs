@@ -17,8 +17,14 @@ public class Program
 
         int day = -1;
         int part = -1;
+        var testMode = false;
 
         foreach(var (argName, index) in argIndices) {
+            switch(argName) {
+                case "--test":
+                    testMode = true;
+                    continue;
+            }
             var argIndex = index + 1;
             if (argIndex >= args.Length) {
                 PrintUsageStringAndExit();
@@ -57,7 +63,8 @@ public class Program
             PrintUsageStringAndExit();
         }
 
-        var lines = File.ReadAllLines($"./input/{day:D2}-{part}.txt");
+        string GetTestString() => testMode ? "-test" : "";
+        var lines = File.ReadAllLines($"./input/{day:D2}{GetTestString()}.txt");
 
         var solver = SolverDict.Solvers[day];
         var solution = solver.Solve(lines, part);
