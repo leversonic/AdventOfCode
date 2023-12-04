@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 
 namespace ADL.AdventOfCode2023;
@@ -8,9 +6,8 @@ public partial class EngineSchematicSolver : ISolver
 {
     public int Solve(string[] lines, int part)
     {
-        if (part == 1) {
             var numericRegex = NumberRegex();
-
+        if (part == 1) {
             return lines
                 .Select((lineText, lineIndex) => (lineText, lineIndex))
                 .Sum(tuple => {
@@ -18,7 +15,54 @@ public partial class EngineSchematicSolver : ISolver
                         .Sum(match => IsPartNumber(match, tuple.lineIndex, lines) ? int.Parse(match.Value) : 0);
                 });
         } else {
-            throw new NotImplementedException("Part 2 not yet implemented");
+            var numberRegions = lines
+                .Select((line, lineIndex) =>
+                    (
+                        lineIndex,
+                        partNumbers: numericRegex.Matches(line)
+                            .Select(m => (start: m.Index, end: m.Index + m.Length - 1))
+                    ))
+                .Where(tuple => tuple.partNumbers.Any());
+            var gearLocations = lines
+                .Select((line, lineIndex) => {
+                    return line
+                        .Select((character, characterIndex) => (character, characterIndex))
+                        .Where(tuple => tuple.character == '*')
+                        .Select(tuple => (x: tuple.characterIndex, y: lineIndex));
+                }).Aggregate(new List<(int x, int y)>(), (acc, current) => {
+                    foreach (var c in current) {
+                        acc.Add(c);
+                    }
+                    return acc;
+                });
+
+            return gearLocations.Sum(gearLocation => {
+                var adjacentNumericGroups = numberRegions.Select(region => {
+                    if (Math.Abs(gearLocation.y - region.lineIndex) == 1) {
+                        return region.partNumbers.Where(partNumber =>
+                            gearLocation.x >= partNumber.start - 1 && gearLocation.x <= partNumber.end + 1
+                        ).Select(tuple => (tuple.start, tuple.end, row: region.lineIndex));
+                    } else if (gearLocation.y == region.lineIndex) {
+                        return region.partNumbers.Where(partNumber =>
+                            gearLocation.x == partNumber.start - 1 || gearLocation.x == partNumber.end + 1
+                        ).Select(tuple => (tuple.start, tuple.end, row: region.lineIndex));
+                    }
+                    return new List<(int start, int end, int row)>();
+                }).Aggregate(new List<(int start, int end, int row)>(), (acc, current) => {
+                    foreach(var c in current) {
+                        acc.Add(c);
+                    }
+                    return acc;
+                });
+                if (adjacentNumericGroups.Count == 2) {
+                    var (start1, end1, row1) = adjacentNumericGroups[0];
+                    var item1 = lines[row1][start1..(end1 + 1)];
+                    var (start2, end2, row2) = adjacentNumericGroups[1];
+                    var item2 = lines[row2][start2..(end2 + 1)];
+                    return int.Parse(item1) * int.Parse(item2);
+                }
+                return 0;
+            });
         }
     }
 
