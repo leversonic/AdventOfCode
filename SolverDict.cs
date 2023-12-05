@@ -5,6 +5,7 @@ static class SolverDict {
     {
         { 1, new CalibrationSolver() },
         { 2, new CubeGameSolver() },
-        { 3, new EngineSchematicSolver() }
+        { 3, new EngineSchematicSolver() },
+        { 4, new ScratchCardSolver() }
     };
 }

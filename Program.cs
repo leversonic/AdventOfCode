@@ -66,10 +66,14 @@ public class Program
         string GetTestString() => testMode ? "-test" : "";
         var lines = File.ReadAllLines($"./input/{day:D2}{GetTestString()}.txt");
 
-        var solver = SolverDict.Solvers[day];
-        var solution = solver.Solve(lines, part);
+        try {
+            var solver = SolverDict.Solvers[day];
+            var solution = solver.Solve(lines, part);
 
-        Console.WriteLine($"Solution: {solution}");
+            Console.WriteLine($"Solution: {solution}");
+        } catch (KeyNotFoundException) {
+            Console.WriteLine($"Error: solution for Day {day} Part {part} either has not been implemented or has not been added to SolverDict.");
+        }
     }
     private static void PrintUsageStringAndExit()
         {
