@@ -7,6 +7,7 @@ static class SolverDict {
         { 2, new CubeGameSolver() },
         { 3, new EngineSchematicSolver() },
         { 4, new ScratchCardSolver() },
-        { 5, new AlmanacSolver() }
+        { 5, new AlmanacSolver() },
+        { 6, new BoatRaceSolver() }
     };
 }
