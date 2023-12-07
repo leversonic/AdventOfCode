@@ -4,7 +4,7 @@ namespace ADL.AdventOfCode2023;
 
 partial class CalibrationSolver : ISolver
 {
-    public int Solve(string[] lines, int part)
+    public object Solve(string[] lines, int part)
     {
         if (part == 1) {
             var regex = CalibrationPart1Regex();

@@ -4,7 +4,7 @@ namespace ADL.AdventOfCode2023;
 
 public partial class ScratchCardSolver : ISolver
 {
-    public int Solve(string[] lines, int part)
+    public object Solve(string[] lines, int part)
     {
         var cardDict = new Dictionary<int, Card>();
         lines.ToList()

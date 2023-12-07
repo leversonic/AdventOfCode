@@ -8,7 +8,7 @@ partial class CubeGameSolver : ISolver
     private const int GreenCount = 13;
     private const int BlueCount = 14;
 
-    public int Solve(string[] lines, int part)
+    public object Solve(string[] lines, int part)
     {
         var games = ParseGamesFromInput(lines);
         if (part == 1) {

@@ -4,7 +4,7 @@ namespace ADL.AdventOfCode2023;
 
 public partial class EngineSchematicSolver : ISolver
 {
-    public int Solve(string[] lines, int part)
+    public object Solve(string[] lines, int part)
     {
             var numericRegex = NumberRegex();
         if (part == 1) {
