@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace ADL.AdventOfCode2023;
@@ -6,25 +7,22 @@ public partial class CamelPokerSolver : ISolver
 {
     public object Solve(string[] lines, int part)
     {
-        if (part == 1) {
-            var hands = lines
-                .Select(line => {
-                    var lineMatch = InputLineRegex().Match(line);
-                    return new PokerHand{
-                        Cards = lineMatch.Groups[1].Value,
-                        Bid = int.Parse(lineMatch.Groups[2].Value)
-                    };
-                })
-                .Order()
-                .ToArray();
-            var total = 0;
-            for(var i = 0; i < hands.Length; i++) {
-                total += hands[i].Bid * (i + 1);
-            }
-            return total;
-        } else {
-            throw new NotImplementedException();
+        var hands = lines
+            .Select(line => {
+                var lineMatch = InputLineRegex().Match(line);
+                return new PokerHand{
+                    Cards = lineMatch.Groups[1].Value,
+                    Bid = int.Parse(lineMatch.Groups[2].Value),
+                    UseJokerRule = part == 2
+                };
+            })
+            .Order()
+            .ToArray();
+        var total = 0;
+        for(var i = 0; i < hands.Length; i++) {
+            total += hands[i].Bid * (i + 1);
         }
+        return total;
     }
 
     public partial class PokerHand : IComparable<PokerHand>
@@ -41,6 +39,7 @@ public partial class CamelPokerSolver : ISolver
 
         public required string Cards { get; init; }
         public required int Bid { get; init; }
+        public required bool UseJokerRule { get; init; }
 
         private static HandType TypeForHand(string hand) {
             var sortedHand = new string(hand.Order().ToArray());
@@ -67,13 +66,64 @@ public partial class CamelPokerSolver : ISolver
             return HandType.HighCard;
         }
 
-        private static int ValueForCard(char card) {
+        private static HandType BestTypeForHand(string hand) {
+            var distinctNonJokers = hand
+                .Where(card => card != 'J')
+                .Distinct()
+                .ToArray();
+            if (distinctNonJokers.Length == 0) {
+                return HandType.FiveOfAKind;
+            }
+
+            var jokerPositions = hand
+                .Select((card, index) => (card, index))
+                .Where(tuple => tuple.card == 'J')
+                .Select(tuple => tuple.index)
+                .ToArray();
+            var jokerCount = jokerPositions.Length;
+            var characterIndices = new int[jokerCount];
+            var replacementCharacters = new char[jokerCount];
+            Array.Fill(characterIndices, 0);
+            Array.Fill(replacementCharacters, distinctNonJokers[0]);
+
+            var bestType = HandType.HighCard;
+            while(true) {
+                var handToCheckBuilder = new StringBuilder(hand);
+                for(var i = 0; i < jokerCount; i++) {
+                    var jokerPosition = jokerPositions[i];
+                    handToCheckBuilder[jokerPosition] = replacementCharacters[i];
+                }
+                var handToCheck = handToCheckBuilder.ToString();
+                var typeForHand = TypeForHand(handToCheck);
+                if (typeForHand > bestType) {
+                    bestType = typeForHand;
+                }
+                for (var i = jokerCount - 1; i >= 0; i--) {
+                    if (characterIndices[i] == distinctNonJokers.Length - 1) {
+                        characterIndices[i] = 0;
+                        continue;
+                    }
+                    characterIndices[i]++;
+                    break;
+                }
+                if (characterIndices.All(i => i == 0)) {
+                    break;
+                }
+                for(var i = 0; i < jokerCount; i++) {
+                    replacementCharacters[i] = distinctNonJokers[characterIndices[i]];
+                }
+            }
+
+            return bestType;
+        }
+
+        private int ValueForCard(char card) {
             if (int.TryParse(card.ToString(), out var cardValue)) {
                 return cardValue;
             }
             return card.ToString().ToUpper() switch {
                 "T" => 10,
-                "J" => 11,
+                "J" => UseJokerRule ? 1 : 11,
                 "Q" => 12,
                 "K" => 13,
                 "A" => 14,
@@ -86,8 +136,15 @@ public partial class CamelPokerSolver : ISolver
             if (other == null) {
                 throw new InvalidOperationException("Null comparison is not supported");
             }
-            var currentHandType = TypeForHand(Cards);
-            var otherHandType = TypeForHand(other.Cards);
+            HandType currentHandType;
+            HandType otherHandType;
+            if (UseJokerRule) {
+                currentHandType = BestTypeForHand(Cards);
+                otherHandType = BestTypeForHand(other.Cards);
+            } else {
+                currentHandType = TypeForHand(Cards);
+                otherHandType = TypeForHand(other.Cards);
+            }
 
             var comparison = currentHandType - otherHandType;
 
