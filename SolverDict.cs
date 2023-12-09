@@ -9,6 +9,7 @@ static class SolverDict {
         { 4, new ScratchCardSolver() },
         { 5, new AlmanacSolver() },
         { 6, new BoatRaceSolver() },
-        { 7, new CamelPokerSolver() }
+        { 7, new CamelPokerSolver() },
+        { 8, new DesertMapSolver() }
     };
 }
