@@ -1,4 +1,4 @@
-namespace ADL.AdventOfCode2023;
+namespace AdventOfCode.Solvers;
 
 interface ISolver {
     object Solve(string[] lines, int part);

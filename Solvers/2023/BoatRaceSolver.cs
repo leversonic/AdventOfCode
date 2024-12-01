@@ -1,7 +1,7 @@
 using System.Numerics;
 using System.Text.RegularExpressions;
 
-namespace ADL.AdventOfCode2023;
+namespace AdventOfCode.Solvers._2023;
 
 public partial class BoatRaceSolver : ISolver
 {

@@ -1,4 +1,7 @@
-namespace ADL.AdventOfCode2023;
+using AdventOfCode.Solvers;
+using AdventOfCode.Solvers._2023;
+
+namespace AdventOfCode;
 
 static class SolverDict {
     public static Dictionary<int, ISolver> Solvers = new()

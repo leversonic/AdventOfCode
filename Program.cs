@@ -1,8 +1,6 @@
-﻿using System.IO;
+﻿namespace AdventOfCode;
 
-namespace ADL.AdventOfCode2023;
-
-public class Program
+public static class Program
 {
     private static void Main(string[] args)
     {
@@ -15,8 +13,9 @@ public class Program
         .Select((a, i) => (arg: a, index: i))
         .Where(tuple => tuple.arg.StartsWith("--"));
 
-        int day = -1;
-        int part = -1;
+        var year = -1;
+        var day = -1;
+        var part = -1;
         var testMode = false;
 
         foreach(var (argName, index) in argIndices) {
@@ -31,6 +30,13 @@ public class Program
             }
             var argValue = args[argIndex];
             switch(argName) {
+                case "--year":
+                    if (!int.TryParse(argValue, out year))
+                    {
+                        PrintUsageStringAndExit();
+                        return;
+                    }
+                    break;
                 case "--day":
                     if (!int.TryParse(argValue, out day))
                     {
@@ -45,12 +51,15 @@ public class Program
                         return;
                     }
                     break;
-                default:
-                    break;
             }
         }
 
         var missingParameter = false;
+        if (year == -1)
+        {
+            Console.WriteLine("Error: missing value for required parameter --year");
+            missingParameter = true;
+        }
         if (day == -1) {
             Console.WriteLine("Error: missing value for required parameter --day");
             missingParameter = true;
@@ -63,8 +72,7 @@ public class Program
             PrintUsageStringAndExit();
         }
 
-        string GetTestString() => testMode ? "-test" : "";
-        var lines = File.ReadAllLines($"./input/{day:D2}{GetTestString()}.txt");
+        var lines = File.ReadAllLines($"./input/{year:D}/{day:D2}{GetTestString()}.txt");
 
         try {
             var solver = SolverDict.Solvers[day];
@@ -74,6 +82,10 @@ public class Program
         } catch (KeyNotFoundException) {
             Console.WriteLine($"Error: solution for Day {day} Part {part} either has not been implemented or has not been added to SolverDict.");
         }
+
+        return;
+
+        string GetTestString() => testMode ? "-test" : "";
     }
     private static void PrintUsageStringAndExit()
         {

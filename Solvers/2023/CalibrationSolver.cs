@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace ADL.AdventOfCode2023;
+namespace AdventOfCode.Solvers._2023;
 
 partial class CalibrationSolver : ISolver
 {

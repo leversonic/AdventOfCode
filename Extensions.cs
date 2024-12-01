@@ -1,4 +1,4 @@
-namespace ADL.AdventOfCode2023;
+namespace AdventOfCode;
 
 public static class Extensions {
     public static string Reverse(this string str) {
