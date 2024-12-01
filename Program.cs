@@ -75,7 +75,7 @@ public static class Program
         var lines = File.ReadAllLines($"./input/{year:D}/{day:D2}{GetTestString()}.txt");
 
         try {
-            var solver = SolverDict.Solvers[day];
+            var solver = SolverDict.Solvers[year][day];
             var solution = solver.Solve(lines, part);
 
             Console.WriteLine($"Solution: {solution}");
