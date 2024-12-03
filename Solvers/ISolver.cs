@@ -1,5 +1,5 @@
 namespace AdventOfCode.Solvers;
 
-interface ISolver {
+public interface ISolver {
     object Solve(string[] lines, int part);
 }

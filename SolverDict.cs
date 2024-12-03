@@ -4,9 +4,9 @@ using AdventOfCode.Solvers._2024;
 
 namespace AdventOfCode;
 
-static class SolverDict
+public static class SolverDict
 {
-    public static Dictionary<int, Dictionary<int, ISolver>> Solvers = new()
+    public static readonly Dictionary<int, Dictionary<int, ISolver>> Solvers = new()
     {
         {
             2023,
@@ -26,7 +26,8 @@ static class SolverDict
             2024,
             new Dictionary<int, ISolver>
             {
-                { 1, new ListDistanceSolver() }
+                { 1, new ListDistanceSolver() },
+                { 2, new NuclearLevelSolver() }
             }
         }
     };
