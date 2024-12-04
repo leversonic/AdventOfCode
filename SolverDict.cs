@@ -27,7 +27,8 @@ public static class SolverDict
             new Dictionary<int, ISolver>
             {
                 { 1, new ListDistanceSolver() },
-                { 2, new NuclearLevelSolver() }
+                { 2, new NuclearLevelSolver() },
+                { 3, new MultiplicationProgramSolver() }
             }
         }
     };
