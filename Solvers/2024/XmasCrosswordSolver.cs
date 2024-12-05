@@ -10,11 +10,11 @@ public class XmasCrosswordSolver : ISolver
     {
         _lines = lines;
         var total = 0;
-        if (part == 1)
+        for (var x = 0; x < LinesWidth; x++)
         {
-            for (var x = 0; x < LinesWidth; x++)
+            for (var y = 0; y < LinesHeight; y++)
             {
-                for (var y = 0; y < LinesHeight; y++)
+                if (part == 1)
                 {
                     if (_lines[y][x] == WordToFind[0])
                     {
@@ -23,10 +23,34 @@ public class XmasCrosswordSolver : ISolver
                                 .Sum(yDir => GetCount(x, y, xDir, yDir)));
                     }
                 }
+                else
+                {
+                    if (CheckForXmas(x, y))
+                    {
+                        total++;
+                    }
+                }
             }
         }
 
         return total;
+    }
+
+    private bool CheckForXmas(int x, int y)
+    {
+        if (x - 1 < 0 || x + 1 >= LinesWidth || y - 1 < 0 || y + 1 >= LinesHeight || _lines[y][x] != 'A')
+        {
+            return false;
+        }
+
+        var leg1Chars = new []{_lines[y - 1][x - 1], _lines[y + 1][x + 1]}
+            .Order()
+            .Aggregate("", (c1, c2) => c1+c2);
+        var leg2Chars = new []{_lines[y - 1][x + 1], _lines[y + 1][x - 1]}
+            .Order()
+            .Aggregate("", (c1, c2) => c1+c2);
+
+        return leg1Chars == leg2Chars && leg2Chars == "MS";
     }
 
     private int GetCount(int x, int y, int xDir, int yDir)
