@@ -29,7 +29,8 @@ public static class SolverDict
                 { 1, new ListDistanceSolver() },
                 { 2, new NuclearLevelSolver() },
                 { 3, new MultiplicationProgramSolver() },
-                { 4, new XmasCrosswordSolver() }
+                { 4, new XmasCrosswordSolver() },
+                { 5, new SafetyManualPageSolver() }
             }
         }
     };
