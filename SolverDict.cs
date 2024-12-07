@@ -30,7 +30,8 @@ public static class SolverDict
                 { 2, new NuclearLevelSolver() },
                 { 3, new MultiplicationProgramSolver() },
                 { 4, new XmasCrosswordSolver() },
-                { 5, new SafetyManualPageSolver() }
+                { 5, new SafetyManualPageSolver() },
+                { 6, new GuardPathSolver() }
             }
         }
     };
