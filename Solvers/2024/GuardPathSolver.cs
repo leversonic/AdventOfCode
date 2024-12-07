@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode.Solvers._2024;
+﻿using System.Text;
+
+namespace AdventOfCode.Solvers._2024;
 
 public class GuardPathSolver : ISolver
 {
@@ -9,11 +11,12 @@ public class GuardPathSolver : ISolver
             var caratIndex = line.IndexOf('^');
             return caratIndex == -1 ? null : (caratIndex, index);
         }).First(index => index != null)!.Value;
+        var (startX, startY) = (currentX, currentY);
+        var currentDirection = Direction.Up;
 
         if (part == 1)
         {
             var visitedLocations = new HashSet<(int x, int y)> { (currentX, currentY) };
-            var currentDirection = Direction.Up;
 
             while (true)
             {
@@ -28,7 +31,44 @@ public class GuardPathSolver : ISolver
             }
         }
 
-        return null;
+        var loopCount = 0;
+        for (var obstacleX = 0; obstacleX < lines[0].Length; obstacleX++)
+        {
+            for (var obstacleY = 0; obstacleY < lines.Length; obstacleY++)
+            {
+                if (obstacleX == startX && obstacleY == startY || lines[obstacleY][obstacleX] == '#')
+                {
+                    continue;
+                }
+
+                (currentX, currentY, currentDirection) = (startX, startY, Direction.Up);
+                var linesWithObstacle = lines.Select(line => line).ToArray();
+                var sb = new StringBuilder(linesWithObstacle[obstacleY])
+                {
+                    [obstacleX] = '#'
+                };
+                linesWithObstacle[obstacleY] = sb.ToString();
+                var visitedLocationsWithDirection = new HashSet<(int x, int y, Direction dir)>{ (currentX, currentY, currentDirection)};
+                while (true)
+                {
+                    var result = ApplyRule(linesWithObstacle, currentX, currentY, currentDirection);
+                    if (!result.HasValue)
+                    {
+                        break;
+                    }
+
+                    (currentX, currentY, currentDirection) = result.Value;
+                    if (visitedLocationsWithDirection.Add(result.Value))
+                    {
+                        continue;
+                    }
+
+                    loopCount++;
+                    break;
+                }
+            }
+        }
+        return loopCount;
     }
 
     private static (int x, int y, Direction direction)? ApplyRule(string[] lines, int currentX, int currentY, Direction currentDirection)
