@@ -9,50 +9,54 @@ public partial class BridgeEquationSolver : ISolver
     {
         var equationRegex = EquationRegex();
         BigInteger total = 0;
-        if (part == 1)
+        // ReSharper disable once LoopCanBeConvertedToQuery
+        foreach (var line in lines)
         {
-            // ReSharper disable once LoopCanBeConvertedToQuery
-            foreach (var line in lines)
-            {
-                var match = equationRegex.Match(line);
-                BigInteger testValue;
-                try
-                {
-                    testValue = BigInteger.Parse(match.Groups[1].Value);
-                }
-                catch (OverflowException)
-                {
-                    testValue = -1;
-                }
+            var match = equationRegex.Match(line);
 
-                var operands = match.Groups[2].Value.Split(' ').Select(BigInteger.Parse).ToArray();
-                var resultCandidates = ComputeResultCandidates(operands);
-                if (resultCandidates.Any(result => result == testValue))
-                {
-                    total += testValue;
-                }
+            var testValue = BigInteger.Parse(match.Groups[1].Value);
+
+            var operands = match.Groups[2].Value.Split(' ').Select(BigInteger.Parse).ToArray();
+            var resultCandidates = ComputeResultCandidates(operands, part == 2);
+            if (resultCandidates.Any(result => result == testValue))
+            {
+                total += testValue;
             }
         }
 
         return total;
     }
 
-    private static BigInteger[] ComputeResultCandidates(BigInteger[] operands)
+    private static BigInteger[] ComputeResultCandidates(BigInteger[] operands, bool supportConcatenation)
     {
         if (operands.Length == 2)
         {
-            return
-            [
+            var result = new[]
+            {
                 operands[0] + operands[1],
                 operands[0] * operands[1]
-            ];
+            };
+            if (supportConcatenation)
+            {
+                result = result.Concat([BigInteger.Parse($"{operands[0]}{operands[1]}")]).ToArray();
+            }
+            return result;
         }
 
-        return ComputeResultCandidates(operands[..^1]).SelectMany(result => new[]
-        {
-            operands[^1] + result,
-            operands[^1] * result
-        }).ToArray();
+        return ComputeResultCandidates(operands[..^1], supportConcatenation)
+            .SelectMany(result =>
+            {
+                var returnValue = new[]
+                {
+                    result + operands[^1],
+                    result * operands[^1]
+                };
+                if (supportConcatenation)
+                {
+                    returnValue = returnValue.Concat([BigInteger.Parse($"{result}{operands[^1]}")]).ToArray();
+                }
+                return returnValue;
+            }).ToArray();
     }
 
     [GeneratedRegex(@"^(\d+): ((\d+ ?)+)")]
