@@ -31,7 +31,8 @@ public static class SolverDict
                 { 3, new MultiplicationProgramSolver() },
                 { 4, new XmasCrosswordSolver() },
                 { 5, new SafetyManualPageSolver() },
-                { 6, new GuardPathSolver() }
+                { 6, new GuardPathSolver() },
+                { 7, new BridgeEquationSolver() }
             }
         }
     };
