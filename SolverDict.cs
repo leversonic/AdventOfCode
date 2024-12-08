@@ -32,7 +32,8 @@ public static class SolverDict
                 { 4, new XmasCrosswordSolver() },
                 { 5, new SafetyManualPageSolver() },
                 { 6, new GuardPathSolver() },
-                { 7, new BridgeEquationSolver() }
+                { 7, new BridgeEquationSolver() },
+                { 8, new AntennaAntinodeSolver() }
             }
         }
     };
