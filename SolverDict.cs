@@ -33,7 +33,8 @@ public static class SolverDict
                 { 5, new SafetyManualPageSolver() },
                 { 6, new GuardPathSolver() },
                 { 7, new BridgeEquationSolver() },
-                { 8, new AntennaAntinodeSolver() }
+                { 8, new AntennaAntinodeSolver() },
+                { 9, new HardDriveDefragmentationSolver() }
             }
         }
     };
