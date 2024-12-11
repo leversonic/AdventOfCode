@@ -34,7 +34,8 @@ public static class SolverDict
                 { 6, new GuardPathSolver() },
                 { 7, new BridgeEquationSolver() },
                 { 8, new AntennaAntinodeSolver() },
-                { 9, new HardDriveDefragmentationSolver() }
+                { 9, new HardDriveDefragmentationSolver() },
+                { 10, new HikingTrailSolver() }
             }
         }
     };
