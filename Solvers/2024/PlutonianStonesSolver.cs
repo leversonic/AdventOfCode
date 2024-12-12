@@ -6,39 +6,68 @@ public class PlutonianStonesSolver : ISolver
 {
     public object Solve(string[] lines, int part)
     {
-        var rocks = lines[0].Split(" ").Select(BigInteger.Parse).ToList();
-        var iterations = 0;
-        if (part == 1)
-        {
-            iterations = 25;
-        }
+        var rocks = lines[0]
+            .Split(" ")
+            .Select(value => new KeyValuePair<BigInteger, BigInteger>(BigInteger.Parse(value), 1))
+            .ToDictionary();
+        var iterations = part == 1 ? 25 : 75;
+
+        var results = new Dictionary<BigInteger, (BigInteger, BigInteger?)>();
         
         for(var iteration = 0; iteration < iterations; iteration++)
         {
-            var rockIndex = 0;
-            while (rockIndex < rocks.Count)
+            var copyDict = new Dictionary<BigInteger, BigInteger>();
+            foreach (var rock in rocks.Keys)
             {
-                var rock = rocks[rockIndex];
-                switch (rock)
+                if (!results.TryGetValue(rock, out var values))
                 {
-                    case var _ when rock == BigInteger.Zero:
-                        rocks[rockIndex] = 1;
-                        break;
-                    case var _ when rock.ToString().Length % 2 == 0:
-                        var numDigits = rock.ToString().Length;
-                        var digitFactor = BigInteger.Pow(10, numDigits / 2);
-                        rocks[rockIndex] = rock / digitFactor;
-                        rocks.Insert(rockIndex + 1, rock % (int)digitFactor);
-                        rockIndex++;
-                        break;
-                    default:
-                        rocks[rockIndex] *= 2024;
-                        break;
+                    values = ApplyRules(rock);
+                    results.Add(rock, values);
                 }
-                rockIndex++;
+
+                if (copyDict.TryGetValue(values.Item1, out var currentValue))
+                {
+                    copyDict[values.Item1] = currentValue + rocks[rock];
+                }
+                else
+                {
+                    copyDict.Add(values.Item1, rocks[rock]);
+                }
+
+                if (values.Item2.HasValue)
+                {
+                    if (copyDict.TryGetValue(values.Item2.Value, out var currentValue2))
+                    {
+                        copyDict[values.Item2.Value] = currentValue2 + rocks[rock];
+                    }
+                    else
+                    {
+                        copyDict.Add(values.Item2.Value, rocks[rock]);
+                    }
+                }
             }
+
+            rocks = copyDict;
         }
 
-        return rocks.Count;
+        return rocks.Values.Aggregate(BigInteger.Add);
+    }
+
+    private static (BigInteger, BigInteger?) ApplyRules(BigInteger rock)
+    {
+        switch (rock)
+        {
+            case var _ when rock == BigInteger.Zero:
+                return (1, null);
+            case var _ when ((int)BigInteger.Log10(rock) + 1) % 2 == 0:
+                var numDigits = (int)BigInteger.Log10(rock) + 1;
+                var digitFactor = BigInteger.Pow(10, numDigits / 2);
+                var firstValue = rock / digitFactor;
+                var secondValue = rock % (int)digitFactor;
+                return (firstValue, secondValue);
+            default:
+                var newValue = rock * 2024;
+                return (newValue, null);
+        }
     }
 }
