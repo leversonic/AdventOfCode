@@ -35,7 +35,8 @@ public static class SolverDict
                 { 7, new BridgeEquationSolver() },
                 { 8, new AntennaAntinodeSolver() },
                 { 9, new HardDriveDefragmentationSolver() },
-                { 10, new HikingTrailSolver() }
+                { 10, new HikingTrailSolver() },
+                { 11, new PlutonianStonesSolver() }
             }
         }
     };
