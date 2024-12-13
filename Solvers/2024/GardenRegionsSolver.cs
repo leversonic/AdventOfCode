@@ -6,25 +6,25 @@ public class GardenRegionsSolver : ISolver
     {
         var total = 0;
 
-        if (part == 1)
+        var regions = new List<List<(int x, int y)>>();
+        for (var x = 0; x < lines[0].Length; x++)
         {
-            var regions = new List<List<(int x, int y)>>();
-            for (var x = 0; x < lines[0].Length; x++)
+            for (var y = 0; y < lines.Length; y++)
             {
-                for (var y = 0; y < lines.Length; y++)
+                if (!regions.Any(r => r.Contains((x, y))))
                 {
-                    if (!regions.Any(r => r.Contains((x, y))))
-                    {
-                        var region = new List<(int x, int y)> { (x, y) };
-                        PopulateRegion(region, lines, x, y);
-                        regions.Add(region);
-                    }
+                    var region = new List<(int x, int y)> { (x, y) };
+                    PopulateRegion(region, lines, x, y);
+                    regions.Add(region);
                 }
             }
+        }
 
-            foreach (var region in regions)
+        foreach (var region in regions)
+        {
+            var area = region.Count;
+            if (part == 1)
             {
-                var area = region.Count;
                 var perimeter = 0;
                 foreach (var (x, y) in region)
                 {
@@ -50,6 +50,68 @@ public class GardenRegionsSolver : ISolver
                 }
 
                 total += perimeter * area;
+            }
+            else
+            {
+                var cornersCount = 0;
+                foreach (var (x, y) in region)
+                {
+                    // Regular corners
+                    if (!region.Contains((x - 1, y - 1)))
+                    {
+                        if (region.Contains((x - 1, y)) ^ !region.Contains((x, y - 1)))
+                        {
+                            cornersCount++;
+                        }
+                    }
+
+                    if (!region.Contains((x - 1, y + 1)))
+                    {
+                        if (region.Contains((x - 1, y)) ^ !region.Contains((x, y + 1)))
+                        {
+                            cornersCount++;
+                        }
+                    }
+
+                    if (!region.Contains((x + 1, y - 1)))
+                    {
+                        if (region.Contains((x + 1, y)) ^ !region.Contains((x, y - 1)))
+                        {
+                            cornersCount++;
+                        }
+                    }
+
+                    if (!region.Contains((x + 1, y + 1)))
+                    {
+                        if (region.Contains((x + 1, y)) ^ !region.Contains((x, y + 1)))
+                        {
+                            cornersCount++;
+                        }
+                    }
+
+                    // Literal corner cases
+                    if (region.Contains((x + 1, y + 1)) && !region.Contains((x, y + 1)) && !region.Contains((x + 1, y)))
+                    {
+                        cornersCount++;
+                    }
+
+                    if (region.Contains((x + 1, y - 1)) && !region.Contains((x, y - 1)) && !region.Contains((x + 1, y)))
+                    {
+                        cornersCount++;
+                    }
+                    
+                    if (region.Contains((x - 1, y + 1)) && !region.Contains((x, y + 1)) && !region.Contains((x - 1, y)))
+                    {
+                        cornersCount++;
+                    }
+                    
+                    if (region.Contains((x - 1, y - 1)) && !region.Contains((x, y - 1)) && !region.Contains((x - 1, y)))
+                    {
+                        cornersCount++;
+                    }
+                }
+
+                total += cornersCount * area;
             }
         }
 
