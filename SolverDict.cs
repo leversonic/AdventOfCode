@@ -10,7 +10,7 @@ public static class SolverDict
     {
         {
             2023,
-            new Dictionary<int, ISolver>
+            new()
             {
                 { 1, new CalibrationSolver() },
                 { 2, new CubeGameSolver() },
@@ -24,7 +24,7 @@ public static class SolverDict
         },
         {
             2024,
-            new Dictionary<int, ISolver>
+            new()
             {
                 { 1, new ListDistanceSolver() },
                 { 2, new NuclearLevelSolver() },
@@ -38,7 +38,8 @@ public static class SolverDict
                 { 10, new HikingTrailSolver() },
                 { 11, new PlutonianStonesSolver() },
                 { 12, new GardenRegionsSolver() },
-                { 13, new ClawMachineSolver() }
+                { 13, new ClawMachineSolver() },
+                { 14, new BathroomRobotSolver() }
             }
         }
     };
