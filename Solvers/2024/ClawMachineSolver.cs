@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Numerics;
+using System.Text.RegularExpressions;
 using AdventOfCode.Utility;
 
 namespace AdventOfCode.Solvers._2024;
@@ -11,7 +12,7 @@ public partial class ClawMachineSolver : ISolver
         const int buttonBCost = 1;
         var machines = ParseLines(lines);
 
-        var total = 0;
+        double total = 0;
 
         if (part == 1)
         {
@@ -31,6 +32,30 @@ public partial class ClawMachineSolver : ISolver
                 total += options.Count > 0
                     ? options.Min(option => option.a * buttonACost + option.b * buttonBCost)
                     : 0;
+            }
+        }
+        else
+        {
+            const double conversionError = 10000000000000;
+            var bigMachines = machines.Select(m => new Machine<double>
+            {
+                ButtonA = new(m.ButtonA.X, m.ButtonA.Y),
+                ButtonB = new(m.ButtonB.X, m.ButtonB.Y),
+                Prize = new Coordinate<double>(m.Prize.X, m.Prize.Y) + conversionError
+            });
+
+            foreach (var machine in bigMachines)
+            {
+                var n = (machine.Prize.Y - machine.Prize.X * machine.ButtonA.Y / machine.ButtonA.X)
+                        / (machine.ButtonB.Y - machine.ButtonA.Y * machine.ButtonB.X / machine.ButtonA.X);
+                var m = (machine.Prize.X - n * machine.ButtonB.X) / machine.ButtonA.X;
+                const double tolerance = 0.01;
+                if (m > 0 && n > 0
+                    && Math.Abs(n - Math.Round(n)) < tolerance
+                    && Math.Abs(m - Math.Round(m)) < tolerance)
+                {
+                    total += m * buttonACost + n * buttonBCost;
+                }
             }
         }
 
@@ -84,11 +109,12 @@ public partial class ClawMachineSolver : ISolver
         return machines;
     }
 
-    private class Machine
+    private class Machine : Machine<int>;
+    private class Machine<T> where T : INumberBase<T>
     {
-        public Coordinate ButtonA { get; set; } = new(0, 0);
-        public Coordinate ButtonB { get; set; } = new(0, 0);
-        public Coordinate Prize { get; set; } = new(0, 0);
+        public Coordinate<T> ButtonA { get; set; } = null!;
+        public Coordinate<T> ButtonB { get; set; } = null!;
+        public Coordinate<T> Prize { get; set; } = null!;
     }
 
     [GeneratedRegex(@"^Button (?<Button>A|B): X\+(?<X>\d+), Y\+(?<Y>\d+)$")]
