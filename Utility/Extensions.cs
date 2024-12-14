@@ -1,4 +1,4 @@
-namespace AdventOfCode;
+namespace AdventOfCode.Utility;
 
 public static class Extensions {
     public static string Reverse(this string str) {
