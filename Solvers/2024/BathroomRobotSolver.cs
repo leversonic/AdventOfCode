@@ -62,7 +62,7 @@ public partial class BathroomRobotSolver : ISolver
 
     private static bool IsChristmasTree(List<Robot> robots)
     {
-        const double threshold = 0.8;
+        const double threshold = 0.5;
         var robotGrid = new bool[Width,Height];
         foreach (var robot in robots)
         {
