@@ -39,7 +39,8 @@ public static class SolverDict
                 { 11, new PlutonianStonesSolver() },
                 { 12, new GardenRegionsSolver() },
                 { 13, new ClawMachineSolver() },
-                { 14, new BathroomRobotSolver() }
+                { 14, new BathroomRobotSolver() },
+                { 15, new WarehouseRobotSolver() }
             }
         }
     };
