@@ -1,6 +1,7 @@
 using AdventOfCode.Solvers;
 using AdventOfCode.Solvers._2023;
 using AdventOfCode.Solvers._2024;
+using AdventOfCode.Solvers._2025;
 
 namespace AdventOfCode;
 
@@ -41,6 +42,13 @@ public static class SolverDict
                 { 13, new ClawMachineSolver() },
                 { 14, new BathroomRobotSolver() },
                 { 15, new WarehouseRobotSolver() }
+            }
+        },
+        {
+            2025,
+            new()
+            {
+                { 1, new SafeDialPasswordSolver() }
             }
         }
     };
