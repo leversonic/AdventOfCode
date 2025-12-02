@@ -19,7 +19,7 @@ public partial class SafeDialPasswordSolver : ISolver
         {
             Step(direction, amount);
             Console.WriteLine($"Current value: {currentValue}");
-            if (currentValue == 0)
+            if (part == 1 && currentValue == 0)
             {
                 zeroCount++;
             }
@@ -29,35 +29,63 @@ public partial class SafeDialPasswordSolver : ISolver
 
         void Step(Direction direction, int amount)
         {
-            switch (direction)
+            if (part == 1)
             {
-                case Direction.Left:
-                    currentValue -= amount;
-                    break;
-                case Direction.Right:
-                    currentValue += amount;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(direction), direction,
-                        "Invalid direction encountered");
+                switch (direction)
+                {
+                    case Direction.Left:
+                        currentValue -= amount;
+                        break;
+                    case Direction.Right:
+                        currentValue += amount;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(direction), direction,
+                            "Invalid direction encountered");
+                }
+
+                switch (currentValue)
+                {
+                    case > maxValue:
+                        while (currentValue > maxValue)
+                        {
+                            currentValue -= maxValue + 1;
+                        }
+
+                        break;
+                    case < 0:
+                        while (currentValue < 0)
+                        {
+                            currentValue += maxValue + 1;
+                        }
+
+                        break;
+                }
             }
-
-            switch (currentValue)
+            else
             {
-                case > maxValue:
-                    while (currentValue > maxValue)
+                var increment = direction switch
+                {
+                    Direction.Left => -1,
+                    Direction.Right => 1,
+                    _ => throw new ArgumentOutOfRangeException(nameof(direction), direction,
+                        "Invalid direction encountered")
+                };
+                for (var i = 0; i < amount; i++)
+                {
+                    currentValue += increment;
+                    currentValue = currentValue switch
                     {
-                        currentValue -= maxValue + 1;
-                    }
+                        > maxValue => 0,
+                        < 0 => maxValue,
+                        _ => currentValue
+                    };
 
-                    break;
-                case < 0:
-                    while (currentValue < 0)
+                    if (currentValue == 0)
                     {
-                        currentValue += maxValue + 1;
+                        zeroCount++;
                     }
-
-                    break;
+                }
             }
         }
     }
