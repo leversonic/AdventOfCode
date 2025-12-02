@@ -7,4 +7,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="input\2025\" />
+    <Folder Include="Solvers\2025\" />
+  </ItemGroup>
+
 </Project>
