@@ -8,47 +8,70 @@ public partial class InvalidIdSolver : ISolver
 {
     public object Solve(string[] lines, int part)
     {
-        if (part == 1)
+        var ranges = lines[0].Split(',').Parse(
+            IdRangeRegex(),
+            id => (id, BigInteger.Parse(id)),
+            id => (id, BigInteger.Parse(id)));
+
+        var counter = BigInteger.Zero;
+        switch (part)
         {
-            var ranges = lines[0].Split(',').Parse(
-                IdRangeRegex(),
-                id => (id, BigInteger.Parse(id)),
-                id => (id, BigInteger.Parse(id)));
-
-            var counter = BigInteger.Zero;
-
-            foreach (var ((startText, startNumber), (endText, endNumber)) in ranges)
+            case 1:
             {
-                var localStartText = startText;
-                var localStartNumber = startNumber;
-                var localEndText = endText;
-                var localEndNumber = endNumber;
-                if (startText.Length != endText.Length)
+                foreach (var ((startText, startNumber), (endText, endNumber)) in ranges)
                 {
-                    if (startText.Length % 2 != 0)
+                    var localStartText = startText;
+                    var localStartNumber = startNumber;
+                    var localEndText = endText;
+                    var localEndNumber = endNumber;
+                    if (startText.Length != endText.Length)
                     {
-                        localStartText = $"1{string.Concat(Enumerable.Repeat('0', startText.Length))}";
-                        localStartNumber = BigInteger.Parse(localStartText);
+                        if (startText.Length % 2 != 0)
+                        {
+                            localStartText = $"1{string.Concat(Enumerable.Repeat('0', startText.Length))}";
+                            localStartNumber = BigInteger.Parse(localStartText);
+                        }
+
+                        if (endText.Length % 2 != 0)
+                        {
+                            localEndText = $"{string.Concat(Enumerable.Repeat('9', endText.Length - 1))}";
+                            localEndNumber = BigInteger.Parse(localEndText);
+                        }
+                    }
+                    else if (startText.Length % 2 != 0)
+                    {
+                        continue;
                     }
 
-                    if (endText.Length % 2 != 0)
-                    {
-                        localEndText = $"{string.Concat(Enumerable.Repeat('9', endText.Length - 1))}";
-                        localEndNumber = BigInteger.Parse(localEndText);
-                    }
-                }
-                else if (startText.Length % 2 != 0)
-                {
-                    continue;
+                    counter += CheckRange(localStartText, localStartNumber, localEndText, localEndNumber);
                 }
 
-                counter += CheckRange(localStartText, localStartNumber, localEndText, localEndNumber);
+                break;
             }
+            case 2:
+            {
+                foreach (var ((_, startNumber), (_, endNumber)) in ranges)
+                {
+                    var regex = RepeatRegex();
+                    for (var i = startNumber; i <= endNumber; i++)
+                    {
+                        var iString = i.ToString();
 
-            return counter;
+                        if (!regex.IsMatch(iString))
+                        {
+                            continue;
+                        }
+
+                        Console.WriteLine($"Found invalid ID: {i}");
+                        counter += i;
+                    }
+                }
+
+                break;
+            }
         }
 
-        throw new NotImplementedException("Part 2 not yet implemented");
+        return counter;
     }
 
     private static BigInteger CheckRange(string startText, BigInteger startNumber, string endText, BigInteger endNumber)
@@ -74,4 +97,7 @@ public partial class InvalidIdSolver : ISolver
 
     [GeneratedRegex(@"(\d+)-(\d+)")]
     private static partial Regex IdRangeRegex();
+
+    [GeneratedRegex(@"^(\d+)\1+$")]
+    private static partial Regex RepeatRegex();
 }
