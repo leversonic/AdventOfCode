@@ -48,7 +48,8 @@ public static class SolverDict
             2025,
             new()
             {
-                { 1, new SafeDialPasswordSolver() }
+                { 1, new SafeDialPasswordSolver() },
+                { 2, new InvalidIdSolver() }
             }
         }
     };
