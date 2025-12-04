@@ -49,7 +49,8 @@ public static class SolverDict
             new()
             {
                 { 1, new SafeDialPasswordSolver() },
-                { 2, new InvalidIdSolver() }
+                { 2, new InvalidIdSolver() },
+                { 3, new JoltageSolver() }
             }
         }
     };
