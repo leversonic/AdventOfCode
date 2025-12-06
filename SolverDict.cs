@@ -52,7 +52,8 @@ public static class SolverDict
                 { 2, new InvalidIdSolver() },
                 { 3, new JoltageSolver() },
                 { 4, new PaperRollSolver() },
-                { 5, new IngredientFreshnessSolver() }
+                { 5, new IngredientFreshnessSolver() },
+                { 6, new CephalopodMathSolver() }
             }
         }
     };
