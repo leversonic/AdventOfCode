@@ -7,22 +7,37 @@ public class PaperRollSolver : ISolver
         var xMax = lines[0].Length - 1;
         var yMax = lines.Length - 1;
         var count = 0;
-        for (var x = 0; x <= xMax; x++)
+        int currentIterationCount;
+        var positionsToRemove = new List<(int X, int Y)>();
+        do
         {
-            for (var y = 0; y <= yMax; y++)
+            currentIterationCount = 0;
+            for (var x = 0; x <= xMax; x++)
             {
-                if (lines[y][x] != '@')
+                for (var y = 0; y <= yMax; y++)
                 {
-                    continue;
-                }
+                    if (lines[y][x] != '@')
+                    {
+                        continue;
+                    }
 
-                var positions = GetValidPositions(x, y);
-                if (positions.Sum(tuple => lines[tuple.Y][tuple.X] == '@' ? 1 : 0) < 4)
-                {
-                    count++;
+                    var positions = GetValidPositions(x, y);
+                    if (positions.Sum(tuple => lines[tuple.Y][tuple.X] == '@' ? 1 : 0) < 4)
+                    {
+                        count++;
+                        currentIterationCount++;
+                        positionsToRemove.Add((x, y));
+                    }
                 }
             }
-        }
+
+            foreach (var (x, y) in positionsToRemove)
+            {
+                var updatedLineChars = lines[y].ToCharArray();
+                updatedLineChars[x] = '.';
+                lines[y] = new(updatedLineChars);
+            }
+        } while (currentIterationCount > 0 && part == 2);
 
         return count;
 
