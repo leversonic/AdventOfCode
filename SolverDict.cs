@@ -51,7 +51,8 @@ public static class SolverDict
                 { 1, new SafeDialPasswordSolver() },
                 { 2, new InvalidIdSolver() },
                 { 3, new JoltageSolver() },
-                { 4, new PaperRollSolver() }
+                { 4, new PaperRollSolver() },
+                { 5, new IngredientFreshnessSolver() }
             }
         }
     };

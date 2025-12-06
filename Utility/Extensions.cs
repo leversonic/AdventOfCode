@@ -2,10 +2,15 @@ using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Utility;
 
-public static class Extensions {
+public static partial class Extensions {
     public static string Reverse(this string str) {
         return new(str.Reverse<char>().ToArray());
     }
+
+    public static IEnumerable<Tuple<T>> Parse<T>(
+        this IEnumerable<string> lines,
+        Func<string, T> parser
+    ) => lines.Parse(IdentityRegex(), parser);
 
     public static IEnumerable<Tuple<T>> Parse<T>(
         this IEnumerable<string> lines,
@@ -91,4 +96,7 @@ public static class Extensions {
             parser5(lineMatch.Groups[5].Value)
         ));
     }
+
+    [GeneratedRegex("^(.*)$")]
+    private static partial Regex IdentityRegex();
 }
