@@ -53,7 +53,8 @@ public static class SolverDict
                 { 3, new JoltageSolver() },
                 { 4, new PaperRollSolver() },
                 { 5, new IngredientFreshnessSolver() },
-                { 6, new CephalopodMathSolver() }
+                { 6, new CephalopodMathSolver() },
+                { 7, new TachyonManifoldSolver() }
             }
         }
     };
